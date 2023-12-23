@@ -5,6 +5,8 @@ import { json } from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
+import  User  from './models/user.model';
+import userRouter from './routes/user.router';
 
 dotenv.config();
 
@@ -22,16 +24,25 @@ sequelize
 	.catch((err) => {
 		console.error('Error al conectar con la base de datos:', err);
 	});
+/* 
+sequelize.sync({ force: true })
+	.then(() => {
+		console.log('Modelos sincronizados con la base de datos.');
+	})
+	.catch(err => {
+		console.log(err);
+	});
+ */
 
-sequelize.sync().then(() => {
-	console.log('Modelos sincronizados con la base de datos.');
-});
+User.sync({ force: true });
 
 app.use(json());
 
 app.get('/', (req, res) => {
 	res.send('Hola, mundo!');
 });
+
+app.use('/api/v1/users', userRouter);
 
 const PORT = process.env.PORT || 3000;
 
