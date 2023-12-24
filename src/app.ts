@@ -34,7 +34,7 @@ sequelize.sync({ force: true })
 	});
  */
 
-User.sync({ force: true });
+User.sync({ force: false });
 
 app.use(json());
 

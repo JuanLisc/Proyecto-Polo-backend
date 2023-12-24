@@ -36,6 +36,11 @@ User.init({
 		type: DataTypes.ENUM('ADMIN', 'USER'),
 		allowNull: false
 	},
+	deletedAt: {
+		type: DataTypes.DATE,
+		defaultValue: new Date(),
+		field: 'deleted_at'
+	}
 }, {
 	sequelize: sequelize,
 	modelName: 'User',
