@@ -1,3 +1,7 @@
+import { Response } from 'express';
+import { IResult } from './interfaces/result.interface';
+import { ValidationError } from 'class-validator';
+
 export function capitalizeFirstLetter (value: string): string {
 	const array = value.split(' ');
 	for (let i = 0; i < array.length; i++) {
@@ -23,4 +27,8 @@ export function extractErrorKeysFromErrors (errors: ValidationError[]): string[]
 	}
 
 	return errorKeys;
+}
+
+export function createHttpResponse (res: Response, result: IResult): void {
+	res.status(result.statusCode).json({ message: result.message, resultKeys: result.resultKeys });
 }

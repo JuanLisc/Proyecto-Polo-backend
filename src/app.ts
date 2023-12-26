@@ -7,6 +7,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import  User  from './models/user.model';
 import userRouter from './routes/user.router';
+import authRouter from './routes/auth.router';
+import { authorizationMiddleware } from './middlewares/authorization';
+import { Roles } from './utils/enums';
 
 dotenv.config();
 
@@ -42,7 +45,8 @@ app.get('/', (req, res) => {
 	res.send('Hola, mundo!');
 });
 
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/users', authorizationMiddleware([Roles.ADMIN]), userRouter);
+app.use('/api/v1/auth', authRouter);
 
 const PORT = process.env.PORT || 3000;
 
