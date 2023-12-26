@@ -36,9 +36,13 @@ User.init({
 		type: DataTypes.ENUM('ADMIN', 'USER'),
 		allowNull: false
 	},
+	isDeleted: {
+		type: DataTypes.BOOLEAN,
+		field: 'is_deleted',
+		defaultValue: false
+	},
 	deletedAt: {
 		type: DataTypes.DATE,
-		defaultValue: new Date(),
 		field: 'deleted_at'
 	}
 }, {
