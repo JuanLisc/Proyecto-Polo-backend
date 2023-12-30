@@ -1,6 +1,9 @@
 import { Response } from 'express';
 import { IResult } from './interfaces/result.interface';
 import { ValidationError } from 'class-validator';
+import { getDay, getHours, getMinutes } from 'date-fns';
+import Meeting from '../models/meeting.model';
+import { MeetingCreateDTO } from '../dtos/meeting.dtos';
 
 export function capitalizeFirstLetter (value: string): string {
 	const array = value.split(' ');
@@ -31,4 +34,43 @@ export function extractErrorKeysFromErrors (errors: ValidationError[]): string[]
 
 export function createHttpResponse (res: Response, result: IResult): void {
 	res.status(result.statusCode).json({ message: result.message, resultKeys: result.resultKeys });
+}
+
+export function isWeekDay(date: Date): boolean {
+	const day = getDay(date);
+
+	return day >= 1 && day <= 5;
+}
+
+//TODO: Probablemente se elimine esto
+export function isValidTime (date: Date): boolean {
+	const hour = getHours(date);
+	const minutes = getMinutes(date);
+
+	return (hour >= 8 && hour < 22) && (minutes === 15 || minutes === 30 || minutes === 45);
+}
+
+export function checkDisponibility(meetingsOfUser: Meeting[], newMeeting: MeetingCreateDTO): boolean {
+	for (const meet of meetingsOfUser) {
+		const beginningHourOldMeeting = meet.hour;
+		const endingHourOldMeeting = meet.hour + meet.duration;
+		const beginningHourNewMeeting = newMeeting.hour;
+		const endingHourNewMeeting = newMeeting.hour + newMeeting.duration;
+
+		console.log('VIEJA MEET FECHA: ', meet.date);
+		console.log('FECHA NUEVA MEET: ', newMeeting.date);
+		console.log('SON IGUALES? ', meet.date === newMeeting.date);
+		
+		if (
+			(meet.date === newMeeting.date) && (
+				(beginningHourNewMeeting >= beginningHourOldMeeting && beginningHourNewMeeting < endingHourOldMeeting) ||
+				(endingHourNewMeeting > beginningHourOldMeeting && endingHourNewMeeting <= endingHourOldMeeting) ||
+				(beginningHourNewMeeting <= beginningHourOldMeeting && endingHourNewMeeting >= endingHourOldMeeting)
+			)
+		) {
+			return false;
+		}
+
+		return true;
+	}
 }

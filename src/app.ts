@@ -10,6 +10,8 @@ import userRouter from './routes/user.router';
 import authRouter from './routes/auth.router';
 import { authorizationMiddleware } from './middlewares/authorization';
 import { Roles } from './utils/enums';
+import Meeting from './models/meeting.model';
+import meetingRouter from './routes/meeting.router';
 
 dotenv.config();
 
@@ -38,6 +40,7 @@ sequelize.sync({ force: true })
  */
 
 User.sync({ force: false });
+Meeting.sync({ force: false });
 
 app.use(json());
 
@@ -47,6 +50,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/users', authorizationMiddleware([Roles.ADMIN]), userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/meetings', authorizationMiddleware([Roles.ADMIN, Roles.USER]), meetingRouter);
 
 const PORT = process.env.PORT || 3000;
 

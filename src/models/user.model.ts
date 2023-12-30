@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../sequelize';
+import Meeting from './meeting.model';
 
 class User extends Model {}
 
@@ -34,7 +35,8 @@ User.init({
 	},
 	role: {
 		type: DataTypes.ENUM('ADMIN', 'USER'),
-		allowNull: false
+		allowNull: false,
+		defaultValue: 'USER'
 	},
 	isDeleted: {
 		type: DataTypes.BOOLEAN,
@@ -51,5 +53,8 @@ User.init({
 	createdAt: 'created_at',
 	updatedAt: 'updated_at'
 });
+
+User.hasMany(Meeting);
+Meeting.belongsTo(User);
 
 export default User;
