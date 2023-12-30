@@ -7,7 +7,7 @@ export const userAccessMiddleware = (message: string, resultkey: string[]): (req
 		const loggedUser = req.user;
 		const userToUpdateId = req.params.id;
 
-		if (loggedUser.id !== userToUpdateId) {
+		if (loggedUser?.id !== userToUpdateId) {
 			createHttpResponse(res, { statusCode: StatusCodes.UNAUTHORIZED, message, resultKeys: resultkey });
 			return;
 		}

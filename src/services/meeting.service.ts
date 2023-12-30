@@ -32,7 +32,6 @@ export class MeetingService {
 			};
 		}
 
-		//TODO: NO FUNCIONA
 		if (!checkDisponibility(meetingsOfUser, meetingCreateDTO)) {
 			return {
 				statusCode: StatusCodes.CONFLICT,
@@ -52,16 +51,6 @@ export class MeetingService {
 				resultKeys: ['not-weekday']
 			};
 		}
-
-		//TODO: probablemente se elimine esto
-		/* if (!isValidTime(meetingCreateDTO.date)) {
-			return {
-				statusCode: StatusCodes.BAD_REQUEST,
-				message: 'The time available is between 8.00 and 22.00 and it could start at .00, .15, .30, .45',
-				entity: null,
-				resultKeys: ['not-valid-time']
-			};
-		} */
 
 		const meetingCreated = await Meeting.create({ ...meetingCreateDTO, UserId: userId });
 
@@ -97,7 +86,7 @@ export class MeetingService {
 		};
 	}
 
-	async update (id: number, meetingUpdateDTO: MeetingUpdateDTO): Promise<IResult> {
+	/* async update (id: number, meetingUpdateDTO: MeetingUpdateDTO): Promise<IResult> {
 		const errors = await validate(meetingUpdateDTO);
 
 		if (errors.length > 0) {
@@ -131,16 +120,6 @@ export class MeetingService {
 			};
 		}
 
-		//TODO: probablemente se elimine esto
-		/* if (!isValidTime(meetingUpdateDTO.date)) {
-			return {
-				statusCode: StatusCodes.BAD_REQUEST,
-				message: 'The time available is between 8.00 and 22.00',
-				entity: null,
-				resultKeys: ['not-valid-time']
-			};
-		} */
-
 		await currentMeeting.update({meetingUpdateDTO});
 		await currentMeeting.reload();
 
@@ -150,10 +129,10 @@ export class MeetingService {
 			entity: currentMeeting,
 			resultKeys: ['ok']
 		};
-	}
+	} */
 
-	async delete (id: number): Promise<IResult> {
-		const meetingToDelete = await Meeting.findByPk(id);
+	async delete (id: number, userId: string): Promise<IResult> {
+		const meetingToDelete = await Meeting.findOne({ where: { id, UserId: userId }});
 
 		if (meetingToDelete === null) {
 			return {

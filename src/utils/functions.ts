@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { IResult } from './interfaces/result.interface';
 import { ValidationError } from 'class-validator';
-import { getDay, getHours, getMinutes } from 'date-fns';
+import { compareAsc, getDay, getHours, getMinutes } from 'date-fns';
 import Meeting from '../models/meeting.model';
 import { MeetingCreateDTO } from '../dtos/meeting.dtos';
 
@@ -57,12 +57,8 @@ export function checkDisponibility(meetingsOfUser: Meeting[], newMeeting: Meetin
 		const beginningHourNewMeeting = newMeeting.hour;
 		const endingHourNewMeeting = newMeeting.hour + newMeeting.duration;
 
-		console.log('VIEJA MEET FECHA: ', meet.date);
-		console.log('FECHA NUEVA MEET: ', newMeeting.date);
-		console.log('SON IGUALES? ', meet.date === newMeeting.date);
-		
 		if (
-			(meet.date === newMeeting.date) && (
+			(compareAsc(meet.date, newMeeting.date) === 0) && (
 				(beginningHourNewMeeting >= beginningHourOldMeeting && beginningHourNewMeeting < endingHourOldMeeting) ||
 				(endingHourNewMeeting > beginningHourOldMeeting && endingHourNewMeeting <= endingHourOldMeeting) ||
 				(beginningHourNewMeeting <= beginningHourOldMeeting && endingHourNewMeeting >= endingHourOldMeeting)
@@ -70,7 +66,6 @@ export function checkDisponibility(meetingsOfUser: Meeting[], newMeeting: Meetin
 		) {
 			return false;
 		}
-
-		return true;
 	}
+	return true;
 }

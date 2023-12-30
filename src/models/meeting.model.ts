@@ -2,7 +2,12 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../sequelize';
 import User from './user.model';
 
-class Meeting extends Model {}
+class Meeting extends Model {
+	public detail: string;
+	public date: Date;
+	public hour: number;
+	public duration: number;
+}
 
 Meeting.init({
 	detail: {

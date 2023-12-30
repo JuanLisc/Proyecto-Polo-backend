@@ -2,7 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../sequelize';
 import Meeting from './meeting.model';
 
-class User extends Model {}
+class User extends Model {
+	public id: string;
+	public email: string;
+	public password: string;
+}
 
 User.init({
 	id: {

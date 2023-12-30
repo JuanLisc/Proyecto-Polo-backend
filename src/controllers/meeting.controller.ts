@@ -12,7 +12,7 @@ export class MeetingController {
 			const meetingCreate = plainToInstance(MeetingCreateDTO, req.body);
 			const loggedUser = req.user;
 
-			const result = await meetingService.create(meetingCreate, loggedUser?.id);
+			const result = await meetingService.create(meetingCreate, loggedUser!.id);
 
 			res.status(result.statusCode).json({ message: result.message, data: { result: result.entity }, resultKeys: result.resultKeys });
 		} catch (error) {
@@ -23,7 +23,7 @@ export class MeetingController {
 	async getAllMeetings (req: Request, res: Response): Promise<void> {
 		try {
 			const loggedUser = req.user;
-			const allMeetings = await meetingService.findAll(loggedUser?.id);
+			const allMeetings = await meetingService.findAll(loggedUser!.id);
 
 			res.status(StatusCodes.OK).json({ data: { result: allMeetings, count: allMeetings.length } });
 		} catch (error) {
@@ -34,7 +34,7 @@ export class MeetingController {
 	async getMeeting (req: Request, res: Response): Promise<void> {
 		try {
 			const loggedUser = req.user;
-			const result = await meetingService.findOne(+req.params.id, loggedUser?.id);
+			const result = await meetingService.findOne(+req.params.id, loggedUser!.id);
 
 			res.status(result.statusCode).json({ message: result.message, data: { result: result.entity }, resultKeys: result.resultKeys });
 		} catch (error) {
@@ -42,7 +42,7 @@ export class MeetingController {
 		}
 	}
 
-	async updateMeeting (req: Request, res: Response): Promise<void> {
+	/* async updateMeeting (req: Request, res: Response): Promise<void> {
 		try {
 			const meetingUpdate = plainToInstance(MeetingUpdateDTO, req.body);
 
@@ -52,11 +52,12 @@ export class MeetingController {
 		} catch (error) {
 			res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
 		}
-	}
+	} */
 
 	async deleteMeeting (req: Request, res: Response): Promise<void> {
 		try {
-			const result = await meetingService.delete(+req.params.id);
+			const loggedUser = req.user;
+			const result = await meetingService.delete(+req.params.id, loggedUser!.id);
 
 			res.status(result.statusCode).send({ data: { result: result.entity }, message: result.message, resultKeys: result.resultKeys });
 		} catch (error) {
