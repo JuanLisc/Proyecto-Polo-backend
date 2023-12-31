@@ -4,8 +4,8 @@ import { IResult } from '../utils/interfaces/result.interface';
 import Meeting from '../models/meeting.model';
 import { validate } from 'class-validator';
 import { checkDisponibility, extractErrorKeysFromErrors, isWeekDay } from '../utils/functions';
-import User from '../models/user.model';
 import { Op } from 'sequelize';
+import { format } from 'date-fns';
 
 export class MeetingService {
 	async create (meetingCreateDTO: MeetingCreateDTO, userId: string): Promise<IResult> {
@@ -42,8 +42,6 @@ export class MeetingService {
 			};
 		}
 
-		console.log(!checkDisponibility(meetingsOfUser, meetingCreateDTO));
-
 		if (!isWeekDay(meetingCreateDTO.date)) {
 			return {
 				statusCode: StatusCodes.BAD_REQUEST,
@@ -53,7 +51,8 @@ export class MeetingService {
 			};
 		}
 
-		const meetingCreated = await Meeting.create({ ...meetingCreateDTO, UserId: userId });
+		const dateFormated = format(new Date(meetingCreateDTO.date),  'yyyy-MM-dd');
+		const meetingCreated = await Meeting.create({ ...meetingCreateDTO, date: dateFormated, UserId: userId });
 
 		return {
 			statusCode: StatusCodes.CREATED,
@@ -64,16 +63,11 @@ export class MeetingService {
 	}
 
 	async findAll (userId: string, dateQuery?: Date): Promise<Meeting[]> {
-		if (dateQuery === undefined) {
-			return await Meeting.findAll({ where: { UserId: userId }, order: [['date', 'ASC']]});
-		}
 		return dateQuery
 			? await Meeting.findAll({
 				where: { 
 					UserId: userId,
-					date: {
-						[Op.between]: [dateQuery, new Date(dateQuery!.getTime() + 24 * 60 * 60 * 1000)]
-					}
+					date: dateQuery
 				},
 				order: [['date', 'ASC']]
 			})

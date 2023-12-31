@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { MeetingCreateDTO, MeetingUpdateDTO } from '../dtos/meeting.dtos';
 import { MeetingService } from '../services/meeting.service';
+import { format } from 'date-fns';
 
 const meetingService = new MeetingService();
 
@@ -24,12 +25,9 @@ export class MeetingController {
 		try {
 			const loggedUser = req.user;
 			const queryDate = req.query.date
-				? new Date(req.query.date as string)
+				? new Date(format(req.query.date as string, 'yyyy-MM-dd'))
 				: undefined;
-			console.log('QUERY DATE: ', queryDate);
-			console.log('TIPO: ', typeof queryDate);
 			
-
 			const allMeetings = await meetingService.findAll(loggedUser!.id, queryDate);
 
 			res.status(StatusCodes.OK).json({ data: { result: allMeetings, count: allMeetings.length } });
