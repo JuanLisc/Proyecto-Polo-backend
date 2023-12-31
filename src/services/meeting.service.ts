@@ -3,8 +3,9 @@ import { MeetingCreateDTO, MeetingUpdateDTO } from '../dtos/meeting.dtos';
 import { IResult } from '../utils/interfaces/result.interface';
 import Meeting from '../models/meeting.model';
 import { validate } from 'class-validator';
-import { checkDisponibility, extractErrorKeysFromErrors, isValidTime, isWeekDay } from '../utils/functions';
+import { checkDisponibility, extractErrorKeysFromErrors, isWeekDay } from '../utils/functions';
 import User from '../models/user.model';
+import { Op } from 'sequelize';
 
 export class MeetingService {
 	async create (meetingCreateDTO: MeetingCreateDTO, userId: string): Promise<IResult> {
@@ -62,8 +63,33 @@ export class MeetingService {
 		};
 	}
 
-	async findAll (userId: string): Promise<Meeting[]> {
-		return await Meeting.findAll({ where: { UserId: userId }});
+	async findAll (userId: string, dateQuery?: Date): Promise<Meeting[]> {
+		if (dateQuery === undefined) {
+			return await Meeting.findAll({ where: { UserId: userId }, order: [['date', 'ASC']]});
+		}
+		return dateQuery
+			? await Meeting.findAll({
+				where: { 
+					UserId: userId,
+					date: {
+						[Op.between]: [dateQuery, new Date(dateQuery!.getTime() + 24 * 60 * 60 * 1000)]
+					}
+				},
+				order: [['date', 'ASC']]
+			})
+			: await Meeting.findAll({ where: { UserId: userId }, order: [['date', 'ASC']]});
+	}
+
+	async findOneDayMeetings (userId: string, dateQuery: Date): Promise<Meeting[]> {
+		return await Meeting.findAll({
+			where: { 
+				UserId: userId,
+				date: {
+					[Op.between]: [dateQuery, new Date(dateQuery!.getTime() + 24 * 60 * 60 * 1000)]
+				}
+			},
+			order: [['date', 'ASC']]
+		});
 	}
 
 	async findOne (id: number, userId: string): Promise<IResult> {

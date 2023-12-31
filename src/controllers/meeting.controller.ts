@@ -23,7 +23,14 @@ export class MeetingController {
 	async getAllMeetings (req: Request, res: Response): Promise<void> {
 		try {
 			const loggedUser = req.user;
-			const allMeetings = await meetingService.findAll(loggedUser!.id);
+			const queryDate = req.query.date
+				? new Date(req.query.date as string)
+				: undefined;
+			console.log('QUERY DATE: ', queryDate);
+			console.log('TIPO: ', typeof queryDate);
+			
+
+			const allMeetings = await meetingService.findAll(loggedUser!.id, queryDate);
 
 			res.status(StatusCodes.OK).json({ data: { result: allMeetings, count: allMeetings.length } });
 		} catch (error) {
