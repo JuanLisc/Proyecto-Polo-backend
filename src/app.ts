@@ -29,15 +29,6 @@ sequelize
 	.catch((err) => {
 		console.error('Error al conectar con la base de datos:', err);
 	});
-/* 
-sequelize.sync({ force: true })
-	.then(() => {
-		console.log('Modelos sincronizados con la base de datos.');
-	})
-	.catch(err => {
-		console.log(err);
-	});
- */
 
 User.sync({ force: false });
 Meeting.sync({ force: false });
@@ -48,7 +39,7 @@ app.get('/', (req, res) => {
 	res.send('Hola, mundo!');
 });
 
-app.use('/api/v1/users', authorizationMiddleware([Roles.ADMIN]), userRouter);
+app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/meetings', authorizationMiddleware([Roles.ADMIN, Roles.USER]), meetingRouter);
 

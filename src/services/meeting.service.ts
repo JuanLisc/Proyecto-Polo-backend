@@ -74,18 +74,6 @@ export class MeetingService {
 			: await Meeting.findAll({ where: { UserId: userId }, order: [['date', 'ASC']]});
 	}
 
-	async findOneDayMeetings (userId: string, dateQuery: Date): Promise<Meeting[]> {
-		return await Meeting.findAll({
-			where: { 
-				UserId: userId,
-				date: {
-					[Op.between]: [dateQuery, new Date(dateQuery!.getTime() + 24 * 60 * 60 * 1000)]
-				}
-			},
-			order: [['date', 'ASC']]
-		});
-	}
-
 	async findOne (id: number, userId: string): Promise<IResult> {
 		const meeting = await Meeting.findOne({ where: { id, UserId: userId } });
 

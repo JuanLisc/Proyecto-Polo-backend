@@ -42,14 +42,6 @@ export function isWeekDay(date: Date): boolean {
 	return day >= 1 && day <= 5;
 }
 
-//TODO: Probablemente se elimine esto
-export function isValidTime (date: Date): boolean {
-	const hour = getHours(date);
-	const minutes = getMinutes(date);
-
-	return (hour >= 8 && hour < 22) && (minutes === 15 || minutes === 30 || minutes === 45);
-}
-
 export function checkDisponibility(meetingsOfUser: Meeting[], newMeeting: MeetingCreateDTO): boolean {
 	for (const meet of meetingsOfUser) {
 		const beginningHourOldMeeting = meet.hour;
