@@ -36,7 +36,7 @@ La aplicación utiliza variables de entorno para diversos fines, como configurar
 1. Clona el repositorio en tu PC:
 $ git clon https://github.com/JuanLisc/Proyecto-Polo-backend.git
 
-2.-Navegue al directorio del proyecto:
+2. Navegue al directorio del proyecto:
 $ cd Proyecto-Polo-backend
 
 3. Instale las dependencias del proyecto:
